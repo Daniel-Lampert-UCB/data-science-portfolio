@@ -1,2 +1,3 @@
 # data-science-portfolio
-A repository of some of the work I have done in data science.
+Repository containing data science projects I have completed for academic, self learning, and public health projects. The contents inlucde Jupyter Notebooks and R markdown files.
+# Contentents
