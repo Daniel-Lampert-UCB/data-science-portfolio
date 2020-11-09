@@ -1,0 +1,608 @@
+    1  ls -la
+    2  ls -la
+    3  docker pull midsw205/base
+    4  ls -l
+    5  cd w205
+    6  ls -l
+    7  ls 
+    8  clear
+    9  cd course-content/
+   10  ls -l
+   11  cd w205
+   12  cd ..
+   13  ls
+   14  pwd
+   15  git clone https://github.com/mids-w205-crook/signup-dtascidan.git
+   16  ls - l
+   17  ls 
+   18  cd signup-dtascidan
+   19  git branch assignment
+   20  git status
+   21  git checkout assignment
+   22  git status
+   23  ls -l
+   24  vi
+   25  reset
+   26  ls
+   27  vi README.md 
+   28  git status
+   29  git commit -m "my new readme"
+   30  git config --global user.email "danielclampert@berkeley.edu"
+   31  git config --global user.name "dtascidan"
+   32  git push origin assignment
+   33  vi README.md 
+   34  git commit -m "my new readme"
+   35  git status
+   36  git add README.md 
+   37  git commit -m "my new readme"
+   38  git status
+   39  cat README.md 
+   40  git push origin assignment
+   41  ls -l
+   42  ls
+   43  cd ..
+   44  ls
+   45  pwd
+   46  git clone
+   47  git clone https://github.com/mids-w205-crook/project-1-dtascidan.git
+   48  ls
+   49  cd project-1-dtascidan/
+   50  git status
+   51  git branch assignment
+   52  git checkout assignment
+   53  cd ..
+   54  ls -l
+   55  exit
+   56  mkdir ~/w205
+   57  cd w205
+   58  git clone https://github.com/mids-w205-crook/course-content.git
+   59  cd ..
+   60  ls -l
+   61  cd w205
+   62  ls
+   63  docker run -it --rm -v ~/w205:/w205 midsw205/base:latest bash
+   64  exit
+   65  cd w205
+   66  ls -l
+   67  curl -L -o annot_fpid.json https://goo.gl/qWiu7d
+   68  curl -L -o lp_data.csv https://goo.gl/FDFPYB
+   69  jq
+   70  ls-l
+   71  ls -l
+   72  head lp_data.csv
+   73  tail  lp_data.csv
+   74  head -n1 lp_data.csv
+   75  cat lp_data.csv | wc -l
+   76  clear
+   77  cat lp_data.csv | sort
+   78  man sort
+   79  python
+   80  java
+   81  c++
+   82  c
+   83  clear
+   84  cat lp_data.csv | sort -g
+   85  clear
+   86  cat annot_fpid.json | jq '.[][]'
+   87  cat annot_fpid.json | jq '.[][]' -r
+   88  cat annot_fpid.json | jq '.[][]' -r | sort
+   89  cat annot_fpid.json | jq '.[][]' -r | sort | uniq -c
+   90  cat annot_fpid.json | jq '.[][]' -r | sort | uniq -c | sort -gr | head -10
+   91  clear
+   92  bq
+   93  bq query --use_legacy_sql=false 'SELECT count(*) FROM `bigquery-public-data.san_francisco.bikeshare_status`'
+   94  bq query --use_legacy_sql=false 'SELECT count(distinct station_id) FROM `bigquery-public-data.san_francisco.bikeshare_status`'
+   95  bq query --use_legacy_sql=false 'SELECT min(time), max(time) FROM `bigquery-public-data.san_francisco.bikeshare_status`'
+   96  cat lp_data.csv | awk -F',' '{ print $2,$1 }' | sort
+   97  exit
+   98  cd w205
+   99  ls -l
+  100  cat lp_data.csv | sort -n
+  101  clear
+  102  head annot_fpid.json
+  103  clear
+  104  cat annot_fpid.json | jq .
+  105  docker ps
+  106  docker ps -a
+  107  cd  ~ w205/course-content/
+  108  pwd
+  109  cd ~/w205/course-content
+  110  git pull --all
+  111  clear
+  112  pwd
+  113  docker run -it --rm -v ~/w205:/w205 midsw205/base:latest bash
+  114  docker ps -a
+  115  docker run -it -v ~/w205:/w205 midsw205/base:latest bash
+  116  docker ps -a
+  117  docker rm -f midsw205/base:latest
+  118  docker rm -f 5004c7ccb193
+  119  docker ps -a
+  120  sudo chown -R jupyter:jupyter ~/w205
+  121  clear
+  122  docker ps -a
+  123  docker netword ls
+  124  docker network ls
+  125  docker network prune
+  126  ls
+  127  clear
+  128  docker ps -a
+  129  exit
+  130  pwd
+  131  cd w205/
+  132  ls
+  133  vi README.md
+  134  vi README
+  135  cd project-1-dtascidan/
+  136  vi README.md
+  137  vi README.md 
+  138  git add README.md 
+  139  git commit -m "Added SQL queries from part a of question 1"
+  140  git push origin assignment
+  141  clear
+  142  vi README.md 
+  143  git add README.md 
+  144  git commit -m "Added first question of Part 1"
+  145  git push origin assignment
+  146  clear
+  147  exit
+  148  pwd
+  149  cd w205/project-1-dtascidan/
+  150  ls
+  151  ls -1
+  152  clear
+  153  vi README.md 
+  154  clear
+  155  pwd
+  156  cd w205/project-1-dtascidan/
+  157  vi README.md 
+  158  clear
+  159  git add README.md 
+  160  git commit -m "Answered 2nd question part 1"
+  161  git push origin assignment
+  162  clear
+  163  ls
+  164  cd w205/
+  165  cd project-1-dtascidan/
+  166  vi README.md 
+  167  git add README.md 
+  168  git commit -m 
+  169  git commit -m "Added the third question"
+  170  git push origin assignment
+  171  clear
+  172  exit
+  173  clear
+  174  pwd
+  175  cd w205/project-1-dtascidan/
+  176  pwd
+  177  cd w205/project-1-dtascidan/
+  178  vi README.md 
+  179  bq query --use_legacy_sql=false `
+  180  exit
+  181  quit
+  182  exit
+  183  exit()
+  184  bq query --use_legacy_sql=false '
+  185      SELECT count(*)
+  186      FROM
+  187  bq query --use_legacy_sql=false '
+  188  bq query --use_legacy_sql=false '
+  189  SELECT start_hour, COUNT(start_hour) as most_pop_hour
+  190  FROM `bike_trip_data.time_of_trip`
+  191  GROUP BY start_hour
+  192  ORDER BY most_pop_hour DESC;
+  193  '
+  194  bq query --use_legacy_sql=false '
+  195  SELECT COUNT(DISTINCT(trip_id)) AS trip_count
+  196  FROM `bike_trip_data.bikeshare_trips`'
+  197  bq query --use_legacy_sql=false '
+  198  SELECT MIN(start_date) as min_start_date 
+  199  , MAX(end_date) as max_end_date
+  200  FROM `bike_trip_data. bikeshare_trips`'
+  201  bq query --use_legacy_sql=false '
+  202  SELECT MIN(start_date ) as min_start_date, MAX(end_date) as max_end_date
+  203  FROM `bike_trip_data.bikeshare_trips`'
+  204  bq query --use_legacy_sql=false '
+  205  > SELECT MIN(start_date ) as min_start_date, MAX(end_date) as max_end_date
+  206  > FROM `bike_trip_data.bikeshare_trips`'
+  207  bq query --use_legacy_sql=false '
+  208  SELECT COUNT(DISTINCT(bike_number))
+  209  FROM `bike_trip_data.bikeshare_trips`'
+  210  exit
+  211  vi README.md 
+  212  git add README.md 
+  213  git commit -m "Added bash queries"
+  214  git push origin assignment
+  215  exit
+  216  bq query --use_legacy_sql=false '
+  217  SELECT
+  218    COUNT(*) as Total_Count,
+  219          SUM(CASE WHEN start_hour BETWEEN 6 and 12 THEN 1 ELSE NULL END) Total_Morning,
+  220          SUM(CASE WHEN start_hour Between 12 AND 18 THEN 1 ELSE NULL END) Total_Afternoon  
+  221  FROM    `bike_trip_data.time_of_trip` '
+  222  exit
+  223  cd w205/project-1-dtascidan/
+  224  vi README.md 
+  225  git add README.md 
+  226  git commit -m "added the afternoon and morning question"
+  227  git push origin assignment
+  228  exit
+  229  cd w205
+  230  cd project-1-dtascidan/
+  231  exit
+  232  cd w20
+  233  cd w205/pr
+  234  cd w205/project-1-dtascidan/
+  235  vi README.md 
+  236  git add README.md 
+  237  git commit -m "Added main research questions"
+  238  git push origin assignment
+  239  exit
+  240  clear
+  241  cd w205/project-1-dtascidan/
+  242  vi README.md 
+  243  git add README.md 
+  244  git commit -m "added first two questions, have 
+  245  to revise them"
+  246  git push origin assignment
+  247  exit
+  248  clear
+  249  exit
+  250  clear
+  251  docker-compose
+  252  sudo apt update
+  253  install docker compose
+  254  sudo apt install docker-compose
+  255  docker compose
+  256  docker-compose
+  257  clear
+  258  docker run redis
+  259  docker ps -a
+  260  docker rm -f
+  261  docker rm -f 1fb8694d1bbb 
+  262  clear
+  263  docker ps -a
+  264  docker run -d --name redis
+  265  docker run -d --name redis redis
+  266  docker ps -a
+  267  docker rm -f redis 
+  268  sudo pip3 install redis
+  269  pip install redis
+  270  mkdir ~/w205/redis-standalone
+  271  cd w205/redis-standalone/
+  272  cp ../course-content/05-Storing-Data-II/example-0-docker-compose.yml docker-compose.yml
+  273  ls
+  274  docker-compose up -d
+  275  docker ps -a
+  276  docker-compose logs redis
+  277  ipython
+  278  docker-compose ps
+  279  docker-compose down
+  280  clear
+  281  mkdir ~/w205/redis-cluster
+  282  cd ~/w205/redis-cluster
+  283  cp ../course-content/05-Storing-Data-II/example-1-docker-compose.yml docker-compose.yml
+  284  docker-compose up -d
+  285  docker-compose ps
+  286  docker ps -a
+  287  clear
+  288  docker-compose logs redis
+  289  docker-compose exec mids bash
+  290  docker-compose down
+  291  docker ps -a
+  292  cp ../course-content/05-Storing-Data-II/example-2-docker-compose.yml docker-compose.yml
+  293  docker-compose up -d
+  294  clear
+  295  docker-compose exec mids jupyter notebook --no-browser --port 8888 --ip 0.0.0.0 --allow-root
+  296  docker-compose down
+  297  cp ../course-content/05-Storing-Data-II/example-3-docker-compose.yml docker-compose.yml
+  298  docker-compose up -d
+  299  docker-compose logs mids
+  300  docker-compose down
+  301  clear
+  302  docker ps -a
+  303  ls -l
+  304  docker-compose down
+  305  docker ps -a
+  306  exit
+  307  docker run -d --name redis -p 6379:6379 redis
+  308  docker ps -a 
+  309  docker rm -f redis
+  310  docker ps -a
+  311  clear
+  312  pwd
+  313  ls
+  314  cp ../course-content/05-Storing-Data-II/example-4-docker-compose.yml docker-compose.yml
+  315  cd ~/w205/
+  316  curl -L -o trips.csv https://goo.gl/QvHLKe
+  317  head -n 5 trips.csv
+  318  cd ~/w205/redis-cluster
+  319  docker-compose up -d
+  320  docker-compose logs mids
+  321  exit
+  322  cd w205/project-1-dtascidan/
+  323  vi README.md 
+  324  ls -l
+  325  ls -la
+  326  mkdir backup
+  327  cp *R* backup
+  328  ls -la backup
+  329  cat backup/README.md
+  330  ls -l
+  331  ls -la
+  332  mv .README.md.swo backup
+  333  mv .README.md.swp backup
+  334  ls -la backup/
+  335  ls -la
+  336  vi README.md 
+  337  git add README.md 
+  338  git commit -m "update" 
+  339  git push origin assignment
+  340  exit
+  341  pwd
+  342  cd w205/project-1-dtascidan/
+  343  vim README.md 
+  344  vi README.md 
+  345  git add README.md 
+  346  git comit -m "added new question"
+  347  git commit -m "added new question"
+  348  git push origin assignment
+  349  vi README.md 
+  350  pwd
+  351  cd w20
+  352  cd w205/project-1-dtascidan/
+  353  ls
+  354  clear
+  355  cd w205/project-1-dtascidan/
+  356  ls
+  357  git add Project_1.ipynb
+  358  git commit -m "added jupyter work"
+  359  git push origin assignment
+  360  exit
+  361  clear
+  362  cd w205/project-1-dtascidan/
+  363  git add Project_1.ipynb 
+  364  git commit -m "found the most common trips"
+  365  git push origin assignment
+  366  exit
+  367  clear
+  368  exit
+  369  cd w205/project-1-dtascidan/
+  370  git add Project_1.ipynb 
+  371  git commit -m "added the recommendation"
+  372  git push origin assignment
+  373  exit
+  374  cd w205/project-1-dtascidan/
+  375  git add README.md 
+  376  git commit -m "reformmated"
+  377  git push origin assignment
+  378  git add README.md 
+  379  git commit -m "grammer errors fixex"
+  380  git push origin assignment
+  381  exit
+  382  clear
+  383  cd w205/project-1-dtascidan/
+  384  git add README.md 
+  385  git commit -m "nearly final version'
+  386  "
+  387  git push origin assignment
+  388  git add Project_1.ipynb 
+  389  git commit -m "nearly final version"
+  390  git push origin assignment
+  391  clear
+  392  cd w20
+  393  cd w205/project-1-dtascidan/
+  394  git add Project_1.ipynb 
+  395  git commit m "final version"
+  396  git commit -m "final version"
+  397  git push origin assignment
+  398  clear
+  399  git add README.md 
+  400  git commit -m "final version"
+  401  exit
+  402  sudo chown -R jupyter:jupyter ~/w205
+  403  cd ~/w205/course-content
+  404  git pull --all
+  405  cd
+  406  docker ps -a
+  407  docker pull midsw205/base:latest
+  408  docker pull midsw205/base:0.1.8
+  409  docker pull redis
+  410  docker pull confluentinc/cp-zookeeper:latest
+  411  docker pull confluentinc/cp-kafka:latest
+  412  docker pull midsw205/spark-python:0.0.5
+  413  docker pull midsw205/spark-python:0.0.6
+  414  docker pull midsw205/hadoop:0.0.2
+  415  mkdir ~/w205/kafka
+  416  cd ~/w205/kafka
+  417  cp ~/w205/course-content/06-Transforming-Data/docker-compose.yml ~/w205/kafka/
+  418  docker-compose up -d
+  419  docker-compose ps
+  420  docker-compose logs zookeeper | grep -i binding
+  421  docker-compose logs kafka | grep -i started
+  422  docker-compose exec kafka kafka-topics --create --topic foo --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  423  docker-compose exec kafka kafka-topics --describe --topic foo --zookeeper zookeeper:32181
+  424  docker-compose exec kafka kafka-console-consumer --bootstrap-server localhost:29092 --topic foo --from-beginning --max-messages 42
+  425  docker-compose down
+  426  docker ps -a
+  427  curl -L -o github-example-large.json https://goo.gl/Y4MD58
+  428  docker-compose up -d
+  429  docker compose ps
+  430  docker compose ps -a
+  431  docker-compose ps -a
+  432  clear
+  433  docker-compose exec kafka kafka-topics --create --topic foo --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  434  docker-compose exec kafka kafka-topics --describe --topic foo --zookeeper zookeeper:32181
+  435  docker-compose exec mids bash -c "cat /w205/kafka/github-example-large.json"
+  436  docker-compose exec mids bash -c "cat /w205/kafka/github-example-large.json | jq '.'"
+  437  docker-compose exec mids bash -c "cat /w205/kafka/github-example-large.json | jq '.[]' -c"
+  438  docker-compose exec mids bash -c "cat /w205/kafka/github-example-large.json | jq '.[]' -c | kafkacat -P -b kafka:29092 -t foo && echo 'Produced 100 messages.'"
+  439  docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:29092 --topic foo --from-beginning --max-messages 42
+  440  docker-compose exec mids bash -c "kafkacat -C -b kafka:29092 -t foo -o beginning -e"
+  441  docker-compose exec mids bash -c "kafkacat -C -b kafka:29092 -t foo -o beginning -e" | wc -l
+  442  docker-compose down
+  443  docker-compose ps -a
+  444  docker ps -a
+  445  clear
+  446  git clone https://github.com/mids-w205-crook/project-2-dtascidan.git
+  447  cd ..
+  448  git clone https://github.com/mids-w205-crook/project-2-dtascidan.git
+  449  ls
+  450  git clone https://github.com/mids-w205-crook/project-2-dtascidan.git
+  451  curl -L -o assessment-attempts-20180128-121051-nested.json https://goo.gl/ME6hjp`
+  452  "
+  453  quit
+  454  exit
+  455  "
+  456  ""
+  457  docker-compose up -d
+  458  cd w205/kafka/
+  459  docker-compose logs -f kafka
+  460  clear
+  461  exit
+  462  cd w205/
+  463  ls
+  464  cd project-2-dtascidan/
+  465  ls
+  466  exit
+  467  docker pull midsw205/base:latest
+  468  docker pull midsw205/base:0.1.8
+  469  docker pull midsw205/base:0.1.9
+  470  docker pull redis
+  471  docker pull confluentinc/cp-zookeeper:latest
+  472  docker pull confluentinc/cp-kafka:latest
+  473  docker pull midsw205/spark-python:0.0.5
+  474  docker pull midsw205/spark-python:0.0.6
+  475  docker pull midsw205/cdh-minimal:latest
+  476  docker pull midsw205/hadoop:0.0.2
+  477  docker pull midsw205/presto:0.0.1
+  478  clear
+  479  mkdir ~/w205/spark-with-kafka
+  480  cd ~/w205/spark-with-kafka
+  481  cp ~/w205/course-content/07-Sourcing-Data/docker-compose.yml .
+  482  docker-compose up -d
+  483  docker-compose logs -f kafka
+  484  clear
+  485  docker-compose exec kafka kafka-topics --create --topic foo --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  486  docker-compose exec kafka kafka-topics --describe --topic foo --zookeeper zookeeper:32181
+  487  docker-compose exec mids bash -c "cat /w205/github-example-large.json"
+  488  docker-compose exec mids bash -c "cat /w205/github-example-large.json | jq '.'"
+  489  docker-compose exec mids bash -c "cat /w205/github-example-large.json | jq '.[]' -c"
+  490  clear
+  491  docker-compose exec mids bash -c "cat /w205/github-example-large.json | jq '.[]' -c | kafkacat -P -b kafka:29092 -t foo && echo 'Produced 100 messages.'"
+  492  docker-compose exec spark pyspark
+  493  docker-compose down
+  494  exit
+  495  docker-compose exec kafka kafka-topics --create --topic foo --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  496  cd w205/spark-with-kafka/
+  497  docker-compose exec kafka kafka-topics --create --topic foo --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  498  docker-compose exec kafka kafka-topics --describe --topic foo --zookeeper zookeeper:32181
+  499  docker-compose exec spark pyspark
+  500  clear
+  501  docker-compose down
+  502  cd ~/w205
+  503  curl -L -o github-example-large.json https://goo.gl/Y4MD58
+  504  cd ~/w205/spark-with-kafka
+  505  docker-compose up -d
+  506  docker-compose logs -f kafka
+  507  docker-compose ps -a
+  508  docker-compose ps
+  509  clear
+  510  cd w205
+  511  cd ~/w205/
+  512  cd project-2
+  513  pwd
+  514  ls
+  515  cd project-2
+  516  cd project-2-dtascidan/
+  517  docker-compose down
+  518  curl -L -o assessment-attempts-20180128-121051-nested.json https://goo.gl/ME6hjp`
+  519  exit()
+  520  '
+  521  "
+  522  exit
+  523  cd w205/project-2
+  524  cd w205/project-2-dtascidan/
+  525  curl -L -o assessment-attempts-20180128-121051-nested.json https://goo.gl/ME6hjp
+  526  docker-compose down
+  527  docker-compose dwon
+  528  docker-compose up -d
+  529  pwd
+  530  ls
+  531  ls -l
+  532  docker-compose exec spark bash
+  533  cp ~/w205/course-content/07-Sourcing-Data/docker-compose.yml ~/w205/project-2-dtascidan/
+  534  ls -l
+  535  vim docker-compose.yml 
+  536  docker-compose up -d
+  537  dokcer-compose exec spark bash
+  538  docker-compose exec spark bash
+  539  docker-compose exec kafka kafka-topics --create --topic assessments --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  540  docker-compose exec kafka kafka-topics --describe --topic assessments --zookeeper zookeeper:32181
+  541  docker-compose exec mids bash -c "cat /w205/project-2-dtascidan/assessment-attempts-20180128-121051-nested.json | jq '.[]' -c | kafkacat -P -b kafka:29092 -t assessments"
+  542  docker-compose exec mids bash -c "kafkacat -C -b kafka:29092 -t assessments -o beginning -e"
+  543  docker-compose exec spark env PYSPARK_DRIVER_PYTHON=jupyter PYSPARK_DRIVER_PYTHON_OPTS='notebook --no-browser --port 8888 --ip 0.0.0.0 --allow-root' pyspark
+  544  exit
+  545  sudo chown -R jupyter:jupyter ~/w205
+  546  cd ~/w205/course-content
+  547  git pull --all
+  548  cd
+  549  docker ps -a
+  550  docker network ls
+  551  docker network prune
+  552  docker pull midsw205/base:latest
+  553  docker pull midsw205/base:0.1.8
+  554  docker pull midsw205/base:0.1.9
+  555  docker pull redis
+  556  docker pull confluentinc/cp-zookeeper:latest
+  557  docker pull confluentinc/cp-kafka:latest
+  558  docker pull midsw205/spark-python:0.0.5
+  559  docker pull midsw205/spark-python:0.0.6
+  560  docker pull midsw205/cdh-minimal:latest
+  561  docker pull midsw205/hadoop:0.0.2
+  562  docker pull midsw205/presto:0.0.1
+  563  clear
+  564  cd w205/
+  565  cd ..
+  566  mkdir ~/w205/spark-with-kafka-and-hdfs
+  567  cd ~/w205/spark-with-kafka-and-hdfs
+  568  cp ~/w205/course-content/08-Querying-Data/docker-compose.yml
+  569  cp ~/w205/course-content/08-Querying-Data/docker-compose.yml .
+  570  cd ~/w205
+  571  curl -L -o players.json https://goo.gl/vsuCpZ
+  572  cd ~/w205/spark-with-kafka-and-hdfs
+  573  docker-compose logs -f kafka
+  574  docker-compose ps
+  575  docker-compose ps -a
+  576  exit
+  577  clear
+  578  cd ~/w205/spark-with-kafka-and-hdfs
+  579  docker-compose up -d
+  580  docker-compose exec kafka kafka-topics --create --topic players --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  581  docker-compose exec mids bash -c "cat /w205/players.json | jq '.[]' -c | kafkacat -P -b kafka:29092 -t players"
+  582  docker-compose exec spark pyspark
+  583  docker-compose down
+  584  exit
+  585  clear
+  586  cd ~/w205/spark-with-kafka-and-hdfs
+  587  docker-compose exec cloudera hadoop fs -ls /tmp/
+  588  docker-compose exec cloudera hadoop fs -ls /tmp/players/
+  589  extracted_players.write.parquet("/tmp/extracted_players")
+  590  docker-compose exec cloudera hadoop fs -ls /tmp/
+  591  docker-compose exec cloudera hadoop fs -ls /tmp/extracted_players/
+  592  docker-compose exec kafka kafka-topics --create --topic commits --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:32181
+  593  cd ~/w205/
+  594  ls
+  595  cd ~/w205/spark-with-kafka-and-hdfs
+  596  docker-compose exec mids bash -c "cat /w205/github-example-large.json | jq '.[]' -c | kafkacat -P -b kafka:29092 -t commits"
+  597  docker-compose exec cloudera hadoop fs -ls /tmp/
+  598  docker-compose exec cloudera hadoop fs -ls /tmp/commits/
+  599  docker-compose exec cloudera hadoop fs -ls /tmp/some_commit_info/
+  600  clear
+  601  exit
+  602  pwd
+  603  ls
+  604  cd w205/
+  605  cd project-2
+  606  cd project-2-dtascidan/
+  607  ls
+  608  history > jupyter-history.txt
