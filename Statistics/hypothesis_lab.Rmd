@@ -1,0 +1,551 @@
+---
+title: 'Lab 1: Comparing Means'
+author: 'w203: Statistics for Data Science'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+# Import Packages
+```{r, echo=T,warning=FALSE,message=FALSE}
+library("dplyr")
+library("ggplot2")
+library("tidyr")
+library("tidyverse")
+```
+
+# The Data
+
+The American National Election Studies (ANES) conducts surveys of voters in the United States.  While its flagship survey occurs every four years at the time of each presidential election, ANES also conducts pilot studies midway between these elections.  You are provided with data from the 2018 ANES Pilot Study.
+
+For a glimpse into some of the intricacies that go into the design of this study, take a look at the introduction to the [ANES User's Guide and Codebook](https://electionstudies.org/wp-content/uploads/2019/02/anes_pilot_2018_userguidecodebook.pdf).
+
+It is important to consider the way that the ANES sample was created.  Survery participants are taken from the YouGov panel, which is an online system in which users earn rewards for completing questionnaires.  This feature limits the extent to which results generalize to the U.S. population.
+
+To partially account for differences between the YouGov panel and the U.S. Population, ANES assigns a survey weight to each observation.  This weight estimates the degree to which a citizen with certain observed characteristics is over- or under-represented in the sample.  For the purposes of this assignment, however, you are not asked to use the survey weights.  (For groups with a strong interest in survey analysis, we recommend that you read about R's [survey package](http://r-survey.r-forge.r-project.org/survey/).  We will assign a very small number of bonus points (up to 3) to any group that correctly applies the survey weights and includes a clear explanation of how these work).
+
+```{r}
+A = read.csv("anes_pilot_2018.csv")
+```
+
+Following is an example of a question asked on the ANES survey:
+
+> _How difficult was it for you to vote in this last election?_
+
+The variable `votehard` records answers to this question, with the following encoding:
+
+- -1 inapplicable, legitimate skip
+- 1 Not difficult at all
+- 2 A little difficult
+- 3 Moderately difficult
+- 4 Very difficult
+- 5 Extremely difficult
+
+
+To see the precise form of each question, take a look at the [Questionnaire Specifications](https://electionstudies.org/wp-content/uploads/2018/12/anes_pilot_2018_questionnaire.pdf).
+
+# Assignment
+
+You will use the ANES dataset to address five research questions.  For each question, you will need to operationalize the concepts (selecting appropriate variables and possibly transforming them), conduct exploratory analysis, deal with non-response and other special codes, perform sanity checks, select an appropriate hypothesis test, conduct the test, and interpret your results.  When selecting a hypothesis test, you may choose from the tests covered in the async videos and readings.  These include both paired and unpaired t-tests, Wilcoxon rank-sum test, Wilcoxon signed-rank test, and sign test.  You may select a one-tailed or two-tailed test.
+
+## Submission Guidelines
+- Please organize your response according to the prompts in this notebook.
+- Note that this is a group lab and your instructor will assign you to your team. 
+- Please limit your submission to 5000 words, not counting code or figures.
+- Submit _one_ report per group.
+- Submit *both* your pdf report as well as your source (rmd) file.
+- **Only analyses and comments included in your PDF report will be considered for grading.**
+- Include names of group members on the front page of the submitted report.
+- Naming structure of submitted files:
+    - PDF report: [student_surname_1]\_[student_surname_2][\_*]\_lab\_1.pdf
+    - R-markdown: [student_surname_1]\_[student_surname_2][\_*]\_lab\_1.rmd
+    
+# Research Questions
+
+## Question 1: Do US voters have more respect for the police or for journalists?
+
+### Introduce your topic briefly.  (5 points)
+Explain how your variables are operationalized.  Comment on any gaps that you can identify between your operational definitions and the concepts you are trying to study.
+
+Currently with the Black Lives Matter Movement and the rise of the fake news trend, respect for both the police and the media have decreased. This question attempts to shed light on whether respect for the police or the media has declined more. The data contains two ordinal variables, `ftpolice`, and `ftjournal`, that we will use in our analysis. Each of the two variables takes values in the range [0, 100], where a value represents the rating of an individual for the police or journalists, respectively.
+We note here that there is no predefined value or threshold in this range that operationalizes the definition of respect. This isn't necessary, however, since we will only be comparing the values of voters' police ratings with the values of voters' journalist ratings.
+
+### Perform an exploratory data analysis (EDA) of the relevant variables. (5 points)
+This should include a treatment of non-response and other special codes, basic sanity checks, and a justification for any values that are removed.  Use visual tools to assess the relationship among your variables and comment on any features you find.
+
+Both the journalist ratings and the police ratings are ordinal, real-valued variables that take values in the range [0, 100].
+```{r}
+# Replace missing values in ftjournal and ftpolice with -7
+
+A$ftjournal[is.na(A$ftjournal)] <- -7
+A$ftpolice[is.na(A$ftpolice)] <- -7
+
+# Get eligible voters that responded to either ftjournal or ftpolice
+journalist <- A[A$ftjournal != -7 & A$birthyr > 1910 & A$birthyr < 2000,]
+police <- A[A$ftpolice != -7 & A$birthyr > 1910 & A$birthyr < 2000,]
+
+cat("Length of Voters' Journalist Ratings sample after removing missing values: ", length(journalist$ftjournal))
+cat("Length of Voters' Police Ratings sample after removing missing values: ", length(police$ftpolice))
+
+# Check for duplicate values in ftjournal
+journal_ids <- subset(journalist, select=caseid)$caseid
+cat("Number of duplicate entries in ftjournal: ", sum(duplicated(journal_ids)))
+
+# Check for duplicate values in ftpolice
+police_ids <- subset(police, select=caseid)$caseid
+cat("Number of duplicate entries in ftpolice: ", sum(duplicated(police_ids)))
+```
+Potential missing values have been removed and there are no duplicate entries.
+
+```{r}
+journalist_ratings <- journalist$ftjournal
+police_ratings <- police$ftpolice
+```
+
+The length of the sample of voters' journalist ratings is 2500, and the length of the sample of voters' police ratings is 2500 as well. There are no missing values in either of the samples.
+Since the ratings are given in an ordinal scale the mean is not an appropriate metric. For this reason, we will use the mode.
+
+```{r}
+#User defined function to calculate mode
+get_mode <- function(vect) {
+  unique_vect <- unique(vect)
+  unique_vect[which.max(tabulate(match(vect, unique_vect)))]
+}
+cat("The mode for Journalist Ratings is :",get_mode(journalist_ratings))
+```
+```{r}
+cat("The mode for police rating is:", get_mode(police_ratings))
+```
+
+```{r}
+cat("The median rating for journalist is:", median(journalist_ratings))
+```
+```{r}
+cat("The median for police ratings is:", median(police_ratings))
+```
+
+```{r}
+data_frame(val = journalist_ratings) %>%
+  ggplot(., aes(val) ) + geom_histogram(fill = "cornflowerblue", binwidth = 5, color='gray') + ggtitle("Histogram of Voters' Journalist Ratings") + xlab("Voter Journalist Rating") + theme(plot.title = element_text(hjust = 0.5))
+```
+Taking a look the distribution of the sample of the voters' journalist ratings, it appears that the distribution is quite non-normal.
+
+```{r}
+data_frame(val = police_ratings) %>%
+  ggplot(., aes(val)) + geom_histogram(fill = "brown1", binwidth = 5, color='gray') + ggtitle("Histogram of Voters' Police Ratings") + xlab("Voter Journalist Rating") + theme(plot.title = element_text(hjust = 0.5))
+```
+The distribution of the sample of voters' police ratings appears to be skewed to the left, and fairly non-normal.
+
+
+### Based on your EDA, select an appropriate hypothesis test.  (5 points)
+Explain why your test is the most appropriate choice.  List and evaluate all assumptions for your test.
+
+Let J be a random variable that represents a voters' rating of journalists.
+Let P be a random variable that represents a voters' rating of police.
+
+The samples of the voters' population ratings and the voters' journalist ratings both appear to be quite non-normal, despite having a large sample size of 2500. It may make more sense in this situation to compare voters' respect level for police and journalists using a Wilcoxon Rank-Sum Test. 
+
+The Wilcoxon Rank-Sum Test is the most appropriate choice here because P and J are each on an ordinal scale, each $P_i$ is drawn from the same distribution, each $Y_i$ is drawn from the same distribution, and all $X_i$ and $Y_i$ are mutually independent. The distributions of P and J are not easy to discern, so it also makes sense to apply a distribution-free type of test, which the Wilcoxon Rank-Sum Test is.
+
+The null hypothesis here will be: The probability that a rating drawn from the distribution of $P$ has a higher rating than a rating drawn from the distribution of $Y$ is the same as the probability that a rating draw from the distribution of $Y$ ranks higher than a rating drawn from the distribution of $X$.
+
+This will be a two-tailed test, because we are trying to see if there is a difference in the respect levels between the two groups, but we don't care which direction that difference is in.
+
+The alternative hypothesis will be: The probability that a rating drawn from the distribution of $P$ has a higher rating than a rating drawn from the distribution of $Y$ is *not* the same as the probability that a rating draw from the distribution of $Y$ ranks higher than a rating drawn from the distribution of $X$. The test will be conducted at a significance level of $\alpha = 0.05$.
+
+
+### Conduct your test. (5 points)
+Explain (1) the statistical significance of your result, and (2) the practical significance of your result.  Make sure you relate your findings to the original research question.
+```{r}
+wilcox.test(journalist_ratings, police_ratings)
+```
+With a p-value = 2.2e-16 <  $\alpha = 0.05$, the result of our two-tailed Wilcoxon Rank-Sum Test is statistically significant and shows that the data is more consistent with the alternative hypothesis. 
+
+Since the p-value is far less than the value of 0.05, there is some practical significance here as well. We can be confident in concluding that the sample of the voters' journalist ratings and the sample of the voters' police ratings came from nonidentical populations. Thus, we can conclude with a fair amount of confidence that US voters have differing amounts of respect for the police and journalists.
+
+## Question 2: Are Republican voters older or younger than Democratic voters?
+
+### Introduce your topic briefly.  (5 points)
+Explain how your variables are operationalized.  Comment on any gaps that you can identify between your operational definitions and the concepts you are trying to study.
+
+Democratic voters are generally believed to be younger than Republican voters. It would be interesting to investigate if that is truly the case.
+Birth year is the variable used to represent age. It is given in one year intervals. By subtracting it from 2018, the year when the survey took place, we got the age for each voter. Political party is represneted in two categorical variables denoted with `pid1d` and `pid1r`.
+
+In the survey, people were equally divided into two groups. Individuals in each group were asked the same question about their political inclination: "Generally speaking, do you usually think of yourself as a Democrat, a Republican, an independent, or what?"; however, the order of choices is different among the two groups. These two variables, `pid1d` and `pid1r` store answers to this question from voters in each group, with the following encoding:
+
+- -7 no answer, 
+- -1 they skipped the question or were not assigned the question, 
+- 1 they think of themself as a Democrat, 
+- 2 they think of themself as a Republican, 
+- 3 independent 
+- 4 something else. 
+
+Only birth years between 1910 and 1999 will be considered since individuals born outside this range are unlikely to be alive or be able to vote. The year 2000 was excluded because it may contain individuals who were born after November 3, 2000, and these individuals would have been ineligible to vote in the 2018 election.
+
+
+### Perform an exploratory data analysis (EDA) of the relevant variables. (5 points)
+This should include a treatment of non-response and other special codes, basic sanity checks, and a justification for any values that are removed.  Use visual tools to assess the relationship among your variables and comment on any features you find.
+
+As there are 767 variables in the original dataset, where most of them are unrelated to our research question, it would be great to filter out the variables needed. Also, a new variable representing voter age should be added. In the following code chunk, a new data frame, with_age, is created.
+
+```{r}
+A_ages_eligible_2018 <- subset(A, birthyr > 1910 & birthyr < 2000 & pid1d != -7 & pid1r != -7) # filter out unreasonable ages
+with_age <- A_ages_eligible_2018 %>% 
+  select(birthyr, pid1d, pid1r, caseid) %>% # selecting the columns needed
+  mutate(age = 2018 - birthyr) #adding the age column to the dataframe
+
+#those regard themselves as Democrats
+dem = with_age[with_age$pid1d ==1|with_age$pid1r ==1,]
+#those regard themselves as Republicans
+rep = with_age[with_age$pid1d ==2|with_age$pid1r ==2,]
+
+# Check for missing values
+cat("Total number of missing values in dem and rep tables: ", sum(is.na(dem)) + sum(is.na(rep)))
+
+# Check for duplicate values
+dem_ids <- subset(dem, select=caseid)$caseid
+cat("Number of duplicate entries in table dem: ", sum(duplicated(dem_ids)))
+
+rep_ids <- subset(rep, select=caseid)$caseid
+cat("Number of duplicate entries in table rep: ", sum(duplicated(rep_ids)))
+```
+
+Here is a brief overview of the distributions of age for the `with_age` dataset. 
+
+```{r}
+print("Summary statistics of voter ages:")
+summary(with_age$age) # gives the summary statistics for age
+```
+The ages appear to range from 19 to 91 years, with a mean age of close to 50 years old.
+
+Now we will merge the `rep` and `dem` dataframe since the question only pertains to people from the 2 major parties.
+
+```{r}
+# put Dems and Reps together into a single dataframe
+rep_dem <- rbind(dem,rep)
+# add columns representing voters' political party 
+rep_dem <- rep_dem %>% 
+  select(birthyr, pid1d, pid1r, age) %>%
+  mutate(party = ifelse(pid1d == 1|pid1r == 1,1,ifelse(pid1d == 2|pid1r == 2,2,0))) %>% 
+  mutate(party_str =ifelse(party == 1, "Democrat", "Republican"))# string representation
+table(rep_dem$party)
+paste0("The number of entries with missing value: ", sum(is.na(rep_dem$party)))
+paste0("The number of duplicated entries: ",sum(duplicated(rep_dem$caseid)))
+paste0("Total number of entires: ",length(rep_dem$age))
+```
+There are no missing or duplicated entries in the merged table.
+The following boxplot compares the distributions for voters in each political party.
+
+```{r}
+ggplot(rep_dem, aes(x = party_str, y = age, group = party_str, fill = party_str)) + geom_boxplot() + 
+ggtitle("Distribution of Age Stratified by Political Party") +
+theme(plot.title = element_text(hjust = 0.5)) +
+xlab("Political Party") +
+scale_fill_manual(breaks = c("Democrat", "Republican"), 
+                  values=c("cornflowerblue", "brown1"))
+```
+
+In the plot, the right box in the plot above is slightly higher in position than the left one, indicating a higher mean.
+
+Now let's look at the distribution of age by party more formally. All statistics are the sample statistics, meaning $\bar{X}$ not $\mu$. 
+```{r}
+dem_age = dem$age # age of Democratic voters
+rep_age = rep$age # age of Republican voters
+print("Summary statistics of Democratic Voter ages:")
+summary(dem_age)
+cat("Standard Deviation of Democratic Voter ages: ", sd(dem_age))
+print("Summary statistics of Republican Voter ages:")
+summary(rep_age)
+sd(rep_age)
+cat("Standard Deviation of Republican Voter ages: ", sd(rep_age))
+```
+
+Based on the summary statistics, these two groups have similar variances indicating that they are equally spread out. However, the mean age of Democrat voters (50.5) is lower than that of Republican voters (53.14) in the sample.
+
+
+```{r}
+ggplot(dem, aes(x=age)) + geom_histogram(fill = "cornflowerblue", color='gray', bins=20) + ggtitle("Distribution of Age in Democratic Voters") + theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+{qqnorm(dem$age, pch =1, frame = F, main = "Democrat Voter Age Normal Q-Q Plot")
+qqline(dem$age)}
+```
+
+Though the distribution is not perfectly normal, we can assume that:
+
+$$Democrat \ Age \sim Approx \ N(50.23, 16.83743)$$
+```{r}
+ggplot(rep, aes(x=age)) + geom_histogram(fill = "brown1", color='gray', bins=20) + ggtitle("Distribution of Age in Republican Voters") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+
+```{r}
+{qqnorm(rep$age, pch =1, frame = F, main = "Republican Voter Age Normal Q-Q Plot")
+qqline(rep$age)}
+```
+
+Though the distribution is not perfectly normal, we can assume that:
+$$Republican\ Age \sim Approx\ N(52.86,16.83146)$$
+
+
+### Based on your EDA, select an appropriate hypothesis test.  (5 points)
+Explain why your test is the most appropriate choice.  List and evaluate all assumptions for your test.
+
+A two-sample T test would be an appropriate choice.
+
+- 1. The first assumption for a T test is that the variable is metric. Age is a metric variable because the distance between values is equal and measurable. 
+- 2. The data has to be collected IID. Each sample is pulled from the underlying population which is American citizens who are eligible to vote. 
+- 3. The sample has to be normal or the data has to be large enough for the Central Limit Theorem to apply. Since the data is substantially larger than 30 and there are no major deviations from normality, the CLT holds. 
+
+Under two sample T test, our test hypothesis would be:
+
+$H_0$: There is no age difference between  Democratic voters and Republican voters.
+
+$H_1$: There is an age difference between  Democratic voters and Republican voters.
+For the test, we will use a significance level of $\alpha = 0.05$.
+
+### Conduct your test. (5 points)
+Explain (1) the statistical significance of your result, and (2) the practical significance of your result.  Make sure you relate your findings to the original research question.
+```{r}
+t.test(dem_age, rep_age)
+```
+
+In the above two-sided t test result, the outcome p-value is 0.002834 which is less than the significance level of $\alpha =0.05$ ; the 95% confidence interval is [-4.3802923, -0.9101401] in which zero is not contained. 
+
+As a result, there is enough statistical evidence to reject the null hypothesis. The data is consistent with the alternative hypothesis that there is an age difference between Democratic voters and Republican voters.
+
+## Question 3: Do a majority of independent voters believe that the federal investigations of Russian election interference are baseless?
+
+### Introduce your topic briefly.  (5 points)
+Explain how your variables are operationalized.  Comment on any gaps that you can identify between your operational definitions and the concepts you are trying to study.
+
+We are going to use `muellerinv` which gives ordinal approval ratings for the Mueller investigation, where 1 is the highest approval and 7 is the highest disapproval. Since -7 indicates "No Answer" to the question on the survey, we will remove those from our data. Since the definition of "baseless" is difficult to define directly on the Likert scale of this topic, we set an arbitrary cutoff at 5 - disagree slightly as our null hypothesis. We will only use the datapoints where `pid1d` equals 3 and `pid1r` equals 3, to filter for independent voters.
+
+### Perform an exploratory data analysis (EDA) of the relevant variables. (5 points)
+This should include a treatment of non-response and other special codes, basic sanity checks, and a justification for any values that are removed.  Use visual tools to assess the relationship among your variables and comment on any features you find.
+```{r}
+# Change missing values of muellerinv to -7
+A$muellerinv[is.na(A$muellerinv)] <- -7
+
+# Get eligible independent voters that responded to muellerinv
+mueller_ind <- A[which(A$muellerinv != -7 & (A$pid1d == 3 | A$pid1r == 3) & A$birthyr > 1910 & A$birthyr < 2000),]
+
+cat("Number of Independent Voters' that responded to muellerinv after removing missing values: ", length(mueller_ind$muellerinv))
+
+# Check for duplicate values in muellerinv
+mueller_ids <- subset(mueller_ind, select=caseid)$caseid
+cat("Number of duplicate entries in muellerinv: ", sum(duplicated(mueller_ids)))
+
+summary(mueller_ind$muellerinv)
+```
+Although the other statistics are not relevant for ordinal data, the median is 4, which is useful for determining the middle of the rankings for this question. Potential missing values have been removed and there are no duplicate entries.
+
+```{r}
+barplot(table(mueller_ind$muellerinv), ylim = c(0,250), main = 'Rating of Mueller Investigation Among Independents', xlab = 'Level of Disapproval', ylab = 'Counts', col='darkgreen')
+```
+This is the distribution of ratings for Mueller’s investigation of Russian interference in the 2016 election for all independent voters. As you can see, the distribution is quite non-normal, with peaks on both ends and the middle for the spread of the ratings.
+
+Out of curiosity, let's take a look on what non-independent eligible voters thought of the Mueller investigation.
+
+```{r}
+# Get all voters who are not independents that responded to muellerinv
+mueller_not_independents <- A[which(A$muellerinv != -7 & A$pid1d != 3 & A$pid1r != 3 & A$birthyr > 1910 & A$birthyr < 2000),]
+barplot(table(mueller_not_independents$muellerinv), ylim = c(0,600), main = 'Rating of Mueller Investigation Among Non-Independents', xlab = 'Level of Disapproval', ylab = 'Counts', col='purple')
+```
+
+This is the distribution of ratings for Mueller’s investigation of Russian interference in the 2016 election for all non-independent voters. As you can see, the distribution is quite non-normal, with peaks on both ends and the middle for the spread of the ratings. It is very similar to the distribution for independent voters.
+
+```{r}
+sum(is.na(mueller_ind$muellerinv))
+```
+There are no missing values for this question for subjects who identify themselves as independent voters.
+
+```{r}
+id <- subset(A, pid1d==3, select=caseid)$caseid
+sum(duplicated(id))
+```
+There are no repeated rows/caseid's so we can say that each row is a unique sample and that there are no duplicate entries.
+
+### Based on your EDA, select an appropriate hypothesis test.  (5 points)
+Explain why your test is the most appropriate choice.  List and evaluate all assumptions for your test.
+
+We will use the One-sample Wilcoxon Signed Rank test one-tailed. We are using a one-tailed test because we are only concerned if the median rank rating is greater than the hypothesized value 5, not less.
+
+Let X = rating for Mueller investigation. X is ordinally valued from 1 to 7.
+
+Given that the cardinality of the Likert scale is 7, we treat the variable as continuous even though it is ordinal. We use the Wilcoxon Signed Rank test because we know the distribution is not normal. We assume independence and identically distributed as the data was collected as randomly as a voluntary survey could in a small time frame.
+
+### Conduct your test. (5 points)
+Explain (1) the statistical significance of your result, and (2) the practical significance of your result.  Make sure you relate your findings to the original research question.
+```{r}
+wilcox.test(mueller_ind$muellerinv, alternative = "g", mu = 5, conf.int =TRUE)
+```
+Given that our p-value is 1, we fail to reject the null that the median rank of independent voters is the same or less than rank 5. Therefore we cannot say that a majority of independent voters believe that the Mueller investigations were baseless, as we are assuming that "baseless" is defined as score 5 or higher on the question, "Do you approve, disapprove, or neither approve nor disapprove of Robert Mueller’s investigation of Russian interference in the 2016 election?", where 5 or higher is disaprove slightly, disaprove moderately strongly, or disaprove extremely strongly. 
+
+
+## Question 4: Was anger or fear more effective at driving increases in voter turnout from 2016 to 2018?
+
+### Introduce your topic briefly.  (5 points)
+Explain how your variables are operationalized.  Comment on any gaps that you can identify between your operational definitions and the concepts you are trying to study.
+
+With the last presidential election many believe that emotion, specifically anger and fear have been strong influences on both sides of the political spectrum. The Anes Pilot study includes the question “Generally speaking, how do you feel about the way things are going in the country thesee days?” Participants were asked to answer with several variables including `geangry` and `geafraid`. Participants answered with a Likert scale from 1-5, with 1 not being angry/afraid and 5 being extremely angry/afraid. Voter turnout in the 2018 election is measured by `turnout18` which is a categorical variable from 1-5. 1-3 indicate that the individual voted but vary in methods of voting. 4 indicates they did not vote, and 5 indicates that they were not sure, which we will operationalize as counting in the "did not vote" category just to be safe. Finally, voter turnout in the 2016 election is measured by the ordinal `turnout16` variable, which takes values from 1-3. 1 indicates that the person definitely voted in 2016, 2 indicates that the individual definitely did not vote in 2016, and 3 means unsure.
+
+In this topic, we are interested in individuals that did not vote in 2016 but did vote in 2018. Operationalizing this statement, we want to select individuals who chose option 2 for `turnout16` and did not choose options 4 or 5 for `turnout18`. One caveat here is going to be a small subset of individuals that were too young to vote in 2016 but were old enough to vote in 2018, and we should remove these data points from our analysis because these individuals did not have the option to vote in 2016. To operationalize this, we will use the `birthyr` variable to ensure that the voters being analyzed were born in 1997 or earlier. Note that we will not use 1998 because there a chance that an individual could have been born after November 3, 1998, so such individuals would have been ineligible to vote in 2016.
+
+### Perform an exploratory data analysis (EDA) of the relevant variables. (5 points)
+This should include a treatment of non-response and other special codes, basic sanity checks, and a justification for any values that are removed.  Use visual tools to assess the relationship among your variables and comment on any features you find.
+
+```{r}
+#
+# get individuals who didn't vote in 2016 but did in 2018. Make sure that these individuals were old enough
+# to vote in both elections.
+no_16_yes_18 <- A[which(A$turnout16 == 2 & A$turnout18 != 4 & A$turnout18 != 5 & A$birthyr > 1910 & A$birthyr <= 1997),]
+nrow(no_16_yes_18)
+```
+There were 79 voters who voted in 2018 but did not vote in 2016 despite being eligible.
+
+```{r}
+# Check for duplicate values
+ids <- subset(no_16_yes_18, select=caseid)$caseid
+cat("Number of duplicate entries: ", sum(duplicated(ids)))
+```
+
+```{r}
+# get individuals who were angry and afraid and voted in 2018 but chose not to in 2016
+
+angry_and_afraid <- no_16_yes_18[which(no_16_yes_18$geafraid != -7 & no_16_yes_18$geangry != -7),]
+nrow(angry_and_afraid)
+```
+There were 79 voters who voted in 2018 but did not vote in 2016 despite being eligible, and responded to both the anger and afraidness questions in the questionnaire.
+
+```{r}
+barplot(table(angry_and_afraid$geangry), ylim = c(0,30), main = 'Anger Level of Voters who Voted in 2018 But Not in 2016', xlab = 'Level of Anger', ylab = 'Counts', col='darkred')
+```
+"Somewhat" was the most popular response by the voters of interest when asked how angry they felt. "Extremely" and "A Little" were the next two most popular responses for the question.
+
+```{r}
+barplot(table(angry_and_afraid$geafraid), ylim = c(0,30), main = 'Fear Level of Voters who Voted in 2018 But Not in 2016', xlab = 'Level of Fear', ylab = 'Counts', col='bisque2')
+```
+"Somewhat" was the most popular response by the voters of interest when asked how afraid they felt.
+
+
+### Based on your EDA, select an appropriate hypothesis test.  (5 points)
+Explain why your test is the most appropriate choice.  List and evaluate all assumptions for your test.
+
+Let X = response for anger level.
+Let Y = response for fear level.
+
+To determine whether anger or fear was more effective at driving increases in voter turnout from 2016 to 2018, we can alternately try to test whether there was any difference in the amount of anger or fear felt by the voters that voted in 2018 but not 2016. If there was a difference, then we can feel confident that either anger or fear was more effective at driving increases in voter turnout from 2016 to 2018.
+
+The appropriate hypothesis to use in this case is the Wilcoxon Rank-Sum two-tailed test. There are two main assumptions for the Wilcoxon Rank-Sum test to be valid: the data has to be ordinal, and iid. Since both `geangry` and `geafraid` are Likert scales, the assumption is met. The data is also assumed to be iid and each $X_i$ and $Y_i$ are independent. We will use a significance level of $\alpha = 0.05$
+
+A two-tailed test will be used because we are trying to measure whether there is a difference in the amount of anger or fear that the voters of interest felt, with no preference on which direction that difference lies. A difference in one direction would be equally as important as a difference in the other direction.
+
+### Conduct your test. (5 points)
+Explain (1) the statistical significance of your result, and (2) the practical significance of your result.  Make sure you relate your findings to the original research question.
+
+```{r}
+wilcox.test(angry_and_afraid$geangry, angry_and_afraid$geafraid)
+```
+Since the p value is 0.6979 which is above the significance level of $\alpha$, we fail to reject the null hypothesis that there is a difference between level of afraidness and angriness in voters that voted in 2018 but did not vote in 2016. *Note that* just because we fail to reject the null hypothesis, this *does not* mean that we are concluding that anger and fear were equally effective at driving increases in voter turnout from 2016 to 2018.
+
+## Question 5: Select a fifth question that you believe is important for understanding the behavior of voters
+
+### Clearly argue for the relevance of this question.  (10 points)
+In words, clearly state your research question and argue why it is important for understanding the recent voting behavior. Explain it as if you were presenting to an audience that includes technical and non technical members.
+
+Explain how your variables are operationalized.  Comment on any gaps that you can identify between your operational definitions and the concepts you are trying to study.
+
+We want to answer the question, “Are the education levels between Republican and Democratic voters different?” We would like to answer this question as it may shed light on how voters in either party are influenced by their past educational backgrounds. If there is a difference in educational background between the two parties' voters, then it may provide an incentive in exploring whether a knowledge gap is associated with differences in political opinion. This could provide even more of a reason to strive for equality in access to education.
+
+In this question, we use the variable `educ` to quantify education level for voters. It has the following encoding:
+
+- 1 No HS
+- 2 High school graduate
+- 3 Some college
+- 4 2-year
+- 5 4-year
+- 6 Post-grad
+
+We also used the same variables, `pid1d` and `pid1r`, as we did in question 2 to represent a voter's political party.
+
+### Perform EDA and select your hypothesis test (5 points)
+
+Perform an exploratory data analysis (EDA) of the relevant variables.
+
+This should include a treatment of non-response and other special codes, basic sanity checks, and a justification for any values that are removed.  Use visual tools to assess the relationship among your variables and comment on any features you find.
+
+Just like question 2, the first step is to select variables we need and select voters in the two major political parties.
+
+```{r}
+A_ages_eligible_2016 <- A[A$birthyr > 1910 & A$birthyr < 1998,] #filter out unreasonable ages
+with_educ <- A_ages_eligible_2016 %>% 
+  select(educ, pid1d, pid1r, caseid) # selecting the columns needed
+#those regard themself as a Democrat
+dem = with_educ[with_educ$pid1d ==1|with_educ$pid1r ==1,]
+#those regard themself as a Republican
+rep = with_educ[with_educ$pid1d ==2|with_educ$pid1r ==2,]
+
+# Check for missing values
+cat("Number of missing values in both tables: ", sum(is.na(dem)) + sum(is.na(rep)))
+
+# Check for duplicate values
+dem_ids <- subset(dem, select=caseid)$caseid
+cat("Number of duplicate entries in educ for Democrats: ", sum(duplicated(dem_ids)))
+
+rep_ids <- subset(rep, select=caseid)$caseid
+cat("Number of duplicate entries in educ for Republicans: ", sum(duplicated(rep_ids)))
+```
+There are no missing or duplicate values in the data of interest. Now, let us look at some basic statistics of the two groups we generated. We decided to use the mode as a measure of central tendency instead of the mean since the data is ordinal.
+
+```{r}
+paste0("Group size Democratic voters: ",length(dem$educ))
+paste0("Group size Republican voters: ",length(rep$educ))
+paste0("The mode of education for Democratic voters is : ", get_mode(dem$educ))
+paste0("the mode of education for Republican voters is : ", get_mode(rep$educ))
+table(dem$educ) #Table of educational levels in Democrats
+table(rep$educ) #table of educational levels in Republicans
+```
+We noticed that there are more Democratic voters than Republican voters in our dataset. The mode for the education level of Democratic voters is higher than that of Republican voters (5 vs 3). The table indicates that the spread for both variables is relatively similar, meaning their distributions are roughly spread out equally. Below are histograms of the distribution of education level among the two groups.
+```{r}
+barplot(table(dem$educ), ylim = c(0,250), main = 'Education Level of Democratic Voters', xlab = 'Level of Education', ylab = 'Counts', col='cornflowerblue')
+```
+```{r}
+barplot(table(rep$educ), ylim = c(0,200), main = 'Education Level of Republican Voters', xlab = 'Level of Education', ylab = 'Counts', col='brown1')
+```
+Notice that the distribution for the education level of Democratic voters is slightly left skewed while that for Republican voters is right skewed ever so slightly.
+
+Based on your EDA, select an appropriate hypothesis test.
+Explain why your test is the most appropriate choice.  List and evaluate all assumptions for your test.
+
+Assumptions for Wilcoxon Rank Sum Test for hypothesis of comparison:
+1. The data has to be ordinal. Since education is an ordinal variable, this assumption is satisfied.
+2. The data has to be IID. Since the data is taken from the same underlying distribution, and each variable from the Republican and Democratic group is independent, the iid assumptions are satisfied. We will conduct the Wilcoxon Rank Sum at a significance level of $\alpha = 0.05$.
+
+We will conduct the Wilcoxon Rank Sum at a significance leve of $\alpha = 0.05$
+
+### Conduct your test. (2 points)
+Explain (1) the statistical significance of your result, and (2) the practical significance of your result.
+```{r}
+wilcox.test(dem$educ,rep$educ,conf.int = T)
+```
+
+Since our p-value is substantially lower than the significance level of $\alpha = 0.05$, we can reject the null hypothesis that Republicans and Democrats have the same educational level (in terms of education distribution). Given that we rejected the null, we can say that Republican and Democratic voters have different distributions of educational attainment with high confidence.
+
+### Conclusion (3 points)
+Clearly state the conclusion of your hypothesis test and how it relates to your research question.
+
+Finally, briefly present your conclusion in words as if you were presenting to an audience that includes technical and non technical members.
+
+Our conclusion is that Republican and Democratic voters likely have different distributions of educational attainment. However, we cannot say in which direction this difference is since we used a two-tailed test.  Finally, briefly present your conclusion in words as if you were presenting to an audience that includes technical and non technical members. After conducting the Wilcoxon-Rank Sum two-sample test, we have rejected the null hypothesis that Republican and Democratic voters have the same distribution of educational attainment. This is an important conclusion when considering some of the fundamental differences between the two opposing political parties and why the political atmosphere has been becoming further divided. If we want to improve the political dialogue between two different political parties and identify what polarizes the two parties, one area we can focus on is educational level.
+
+
+
+
