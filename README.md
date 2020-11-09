@@ -6,8 +6,9 @@ Repository containing data science projects I have completed for academic, self 
 2. Digit Classification using K-Nearest Neighbors, Naive Baye's, and Logistic Regression. 
 3. Spam vs Ham Classification using Logistic regression.
 4. Predicting housing prices using linear models.
-### Data Engineering
-1. Big Data Analytics using Google BigQuery
-2. Lambda Architecture using Spark and HDFS
+### Big Data Analytics
+1. Big data analytics using Big Query and Jupyter Lab to analyze Lyft Bay Wheels Bike Trip Data.
+### Lambda Architecture 
+1. Lambda architecture in Spark and HDFS on nested json data
 ### Statistics 
 1. Hypothesis testing lab
