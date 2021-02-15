@@ -13,4 +13,5 @@ Repository containing data science projects I have completed for academic, self 
 ### Lambda Architecture 
 1. Lambda architecture in Spark and HDFS on nested json data
 ### Statistics 
-1. Hypothesis testing lab
+1. Linear regression lab
+2. Hypothesis testing lab
