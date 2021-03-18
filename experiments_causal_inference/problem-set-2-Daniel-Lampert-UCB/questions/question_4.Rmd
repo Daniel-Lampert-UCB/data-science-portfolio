@@ -1,0 +1,79 @@
+# Power Analysis 
+
+Understanding whether your experiment design and data collection strategy are able to reject the null hypothesis *when they should* is valuable! And, this isn't theoretical value. If your design and data collection cannot reject the null hypothesis, why even run the experiment in the first place?
+
+The classical formulation of power asks, "Given a test procedure and data, what proportion of the tests I *could conduct* would reject the null hypothesis?" 
+
+Imagine that you and David Reiley are going to revive the sports card experiment from the previous question. However, because it is for a class project, and because you've already spent all your money on a shiny new data science degree :raised_hands: :money_with_wings: , you're not going to be able to afford to recruit as many participants as before. 
+
+1. Describe a t-test based testing procedure that you might conduct for this experiment. What is your null hypothesis, and what would it take for you to reject this null hypothesis? (This second statement could either be in terms of p-values, or critical values.)
+
+> A t-test experiment for this hypothesis would test if the treatment mean is different than the control mean. In this case, the outcome for the treatment group is the selling price with a paired auction and the outcome for the control group is the selling price for the traditional auction. The null hypothesis is that there is no difference in the means between both groups. To reject the null hypothsis at a significance level of $\alpha = 0.05$, the p-value would have to be below 0.05. 
+
+
+
+2. Suppose that you are only able to recruit 10 people to be a part of your experiment -- 5 in treatment and another 5 in control. Simulate "re-conducting" the sports card experiment once by sampling from the data you previously collected, and conducting the test that you've written down in part 1 above. Given the results of this 10 person simulation, would your test reject the null hypothesis?
+
+```{r ten person sample}
+t_test_ten_people <- d[, .SD[sample(.N, 5, replace = T)], by = uniform_price_auction][, t.test(bid ~ uniform_price_auction)] # this should be a test object
+t_test_ten_people
+
+
+```
+> No we would not reject the null hypothesis. The p-value is $0.5609$ which is way above the significance level. Moreover, the confidence interval includes zero which is another sign that the results are not statistically significant at the $\alpha = 0.05$ level.
+
+3. Now, repeat this process -- sampling 10 people from your existing data and conducting the appropriate test -- one-thousand times. Each time that you conduct this sample and test, pull the p-value from your t-test and store it in an object for later use. Consider whether your sampling process should sample with or without replacement.
+
+```{r many ten person samples}
+t_test_p_values <- rep(NA, 1000) # fill this in with the p-values from your power analysis
+
+sample_and_t <- function(data, size) {
+  data[, .SD[sample(.N, size, replace = T)], by = uniform_price_auction][, t.test(bid ~ uniform_price_auction)$p.value]
+}
+
+t_test_p_values <- replicate(1000, sample_and_t(d, 5))
+
+
+  ## you can either write a for loop, use an apply method, or use replicate (which is an easy-of-use wrapper to an apply method)
+```
+
+4. Use `ggplot` and either `geom_hist()` or `geom_density()` to produce a distribution of your p-values, and describe what you see. What impression does this leave you with about the power of your test? 
+
+```{r histogram of ten person samples}
+library(ggplot2)
+ggplot() + aes(t_test_p_values) +
+  geom_histogram(binwidth=.05) +
+  labs( x = "P-Values", y = "Count", title ="Sample Distribution of Test Statistic")
+```
+
+5. Suppose that you and David were to actually run this experiment and design -- sample 10 people, conduct a t-test, and draw a conclusion. **And** suppose that when you get the data back, **lo and behold** it happens to reject the null hypothesis. Given the power that your design possesses, does the result seem reliable? Or, does it seem like it might be a false-positive result?
+
+> In this case, the statistically significant results are simply due to chance since statistically significant results are seldomly occuring. With a significance level of 0.05, significant results occur due to chance in every 20 executions of the experiment. 
+
+6. Apply the decision rule that you wrote down in part 1 above to each of the simulations you have conducted. What proportion of your simulations have rejected your null hypothesis? This is the p-value that this design and testing procedure generates. After you write and execute your code, include a narrative sentence or two about what you see.  
+
+```{r ten-person power}
+t_test_rejects <- t_test_p_values < 0.05
+sum(t_test_rejects)/1000
+```
+> 13.9% of the simulations have rejected the null hypothesis. This is slightly more than I would have espected purely based on chance, which would have been 5% since the significance level was set at 0.05.  
+
+7. Does buying more sample increase the power of your test? Apply the algorithm you have just written onto different sizes of data. Namely, conduct the exact same process that you have for 10 people, but now conduct the process for every 10% of recruitment size of the original data: Conduct a power analysis with a 10%, 20%, 30%, ... 200% sample of the original data. (You could be more granular if you like, perhaps running this task for every 1% of the data). 
+
+```{r} 
+percentages_to_sample <- c()
+for(percent in seq(from=100, to=2000, by=100)) {
+          res <- sample_and_t(d, percent)
+         percentages_to_sample <- c(percentages_to_sample, res)
+}
+percentages_to_sample
+sum(percentages_to_sample <= 0.05)/length(percentages_to_sample)
+```
+> With a bigger sample size all the results are significant. This demonstrates the power of increasing the sample size. Notably, the p-value actually increases every time the sample size increases!
+
+
+
+
+
+
+

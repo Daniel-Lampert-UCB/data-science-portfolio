@@ -1,0 +1,90 @@
+# 2. Randomization Inference Practice
+
+Suppose that you've been hired as the data scientist at a quack nootropics company. Despite their fraudulent intent, you're dedicated to doing good data science. Or, at least science as good as you can. 
+
+Their newest serum, *kniht* purports to raise its users' executive function. You think that it is just amphetamines. 
+
+As the data scientist for the company, you convince them to conduct a trial. Great! The good news is this:
+
+- Each person is measured twice.
+- Before one of the measurements, they are given a placebo. Before the other of the measurements they are given *kniht*. 
+- You ask for instrumentation on two concepts: 
+  - Creativity, measured as number of proposed alternative uses of an object. (This is a classic, test of "creativity", proposed by J.P. Guilford. For example, how many things can you propose doing with a camera tripod? )
+  - Physical Arousal, measured through skin conductance (i.e. how sweaty is someone). 
+  
+The bad news is this: The company knows that they're selling nonsense, and they don't want you to be able to prove it. They reason that if they provide you only six test subjects, that you won't be able to prove anything, and that they can hide behind a "fail-to-reject" claim. 
+
+```{r}
+kniht <- data.table(
+  person  = rep(LETTERS[1:6], each = 4), 
+  treat   = rep(0:1, each = 2), 
+  measure = rep(c('creative', 'sweat'))
+)
+
+
+kniht[measure == 'creative' & treat == 0, 
+      value := c(10, 13, 14, 16, 25, 40)]
+kniht[measure == 'creative' & treat == 1, 
+      value := c(12, 11, 13, 20, 21, 46)]
+kniht[measure == 'sweat' & treat == 0, 
+      value := c(0.4, 0.7, 0.3, 0.8, 1.0, 1.4)]
+kniht[measure == 'sweat' & treat == 1, 
+      value := c(0.4, 0.7, 2.0, 0.9, 1.6, 2.2)]
+```
+
+Conduct the following tests. 
+
+1. Conduct the appropriate t-test that respects the repeated-measures nature of the data (is this a paired or independent samples t-test?) for both the `creative` and the `sweat` outcomes. After you conduct your tests, write a narrative statement about what you conclude. 
+
+```{r creative t-test}
+t_test_creative <-kniht[measure == "creative"][,t.test(value~treat, paired = T)]
+t_test_creative 
+
+```
+
+```{r sweat t-test}
+t_test_sweat <- kniht[measure == "sweat"][,t.test(value~treat, paired = T)]
+t_test_sweat
+```
+> Neither the results for the paired t-test on creativity nor sweat are significant. This means that the mean outcome variable between the control group and the treatment group are not significantly different under the assumptions of a t-test.
+
+2. Conduct the appropriate randomization inference test that respects the repeated-measures nature of the data. After you conduct your tests, write a narrative statement about what you conclude.  
+
+```{r creative ri}
+# do your work, and then save your computed p-value in the object
+calc_ate <- function(data, m) {
+  ate <- data[measure == m & treat == 1, value] - data[measure == m & treat == 0, value]
+  return(mean(ate))
+}
+
+
+creative_ate <-calc_ate(kniht, "creative")
+creative_ate
+
+creative_ri <- replicate(10000, kniht[measure == 'creative', .(treat = sample(treat), value), 
+                                      keyby = person][, .(mean_values = mean(value)), keyby = treat][,diff(mean_values)])
+
+creative_p_value <- mean(abs(creative_ri > creative_ate))
+creative_p_value
+```
+> With the randomization test on creativity, the results are not statistically significant. This means we do not have sufficient evidence to reject the null hypothesis that Kniht doees not affect executive function. 
+
+```{r sweat ri}
+# do your work, and then save your computed p-value in the object
+sweat_ate <- calc_ate(kniht, "sweat")
+sweat_ri      <- replicate(10000, kniht[measure == 'sweat', .(treat = sample(treat), value), 
+                                      keyby = person][, .(mean_values = mean(value)), keyby = treat][,diff(mean_values)])
+sweat_p_value <- mean(sweat_ri > sweat_ate)
+sweat_ate
+sweat_p_value
+```
+> The significance of this test is actually highly significant with a p-value of 0. We have evidence to reject the null hypothesis. This means we have sufficient evidence to reject the null hypothesis that Kniht has no impact on sweat.
+
+3. Which of these tests are more appropriate to the task at hand, and why? Based on the tests that you have run, what do you conclude about the effectiveness of *kniht*? 
+
+> The randomization tests are far more appropriate. Our sample only contains two measurements for 6 subjects and therefore the assumptions to conduct a T-test are not met. For this reason, the results from the T-test are not trustworthy. There is not any evidence that Kniht impacts creativity, but there is influence it'll increase sweat. 
+
+
+
+
+
