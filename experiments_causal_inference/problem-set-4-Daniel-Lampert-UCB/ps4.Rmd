@@ -1,0 +1,32 @@
+---
+title: 'Experiments and Causality: Problem Set #4'
+author: 'Alex, Scott & Micah'
+date: 12/9/2020
+output: github_document
+---
+
+```{r load packages, warning=FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(knitr)
+library(stargazer)
+```
+
+```{r, child='./questions/question_1.Rmd'}
+```
+
+```{r, child='./questions/question_2.Rmd'}
+```
+
+```{r, child='./questions/question_3.Rmd'}
+```
+
+```{r, child='./questions/question_4.Rmd'}
+```
+
+```{r, child='./questions/question_5.Rmd'}
+```
+

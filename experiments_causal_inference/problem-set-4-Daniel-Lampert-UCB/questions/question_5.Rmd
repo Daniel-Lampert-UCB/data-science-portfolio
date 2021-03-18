@@ -1,0 +1,13 @@
+# Consider Designs 
+
+Determine the direction of bias in estimating the ATE for each of the following situations when we randomize at the individual level.  Do we over-estimate, or underestimate? Briefly but clearly explain your reasoning.
+
+1. Suppose that you're advertising games -- Among Us? -- to try and increase sales, and you individually randomly-assign people into treatment and control. After you randomize, you learn that some treatment-group members are friends with control-group members IRL. 
+
+> This is an issue because the people in the treatment group will likely communicate with people in the control group. In this case I think we'd likely underestimate since the treatment effect will be dampened since the treatment group will likely communicate with the control group making the treatment effect far less clear.
+
+2. As we're writing this question, end-of-year bonuses are being given out in people's companies. (This is not a concept we have in the program -- each day with your smiling faces is reward enough -- and who needs money anyways?) Suppose that you're interested in knowing whether this is a good idea from the point of view of worker productivity and so you agree to randomly assign bonuses to some people. *What might happen to your estimated treatment effects if people learn about the bonuses that others have received?* 
+
+> Besides this idea being horribly unfair, people who did not receive the bonus will likely interpret it as if they did something wrong. This could lead to an underestimate of the ATE since the effect would likely be the opposite if those in the control group did not know their peers received the bonus. For example, I think those in the control group will likely work harder because they would be worried about getting fired. If they didn't learn about the treatment, I think the effect would be the opposite.
+However, there is also the possiblity that this would lead to an overestimate. If workers get discouraged by the **random** nature of bonusses they might be incentivized to work less if the reward is the same. I think this could be biased in either direction.
+Basically, this treatment could be biased in either direction. The direction largely depends on how the employees react.

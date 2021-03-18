@@ -1,0 +1,63 @@
+# 1. Noncompliance in Recycling Experiment 
+
+Suppose that you want to conduct a study of recycling behavior. A number of undergraduate students are hired to walk door to door and provide information about the benefits of recycling to people in the treatment group. Here are some facts about how the experiment was actually carried out.  
+
+- 1,500 households are assigned to the treatment group. 
+- The undergrads tell you that they successfully managed to contact 700 households. 
+- The control group had 3,000 households (not contacted by any undergraduate students). 
+- The subsequent recycling rates (i.e. the outcome variable) are computed and you find that 500 households in the treatment group recycled. In the control group, 600 households recycled.
+
+1. What is the ITT? Do the work to compute it, and store it into the object `recycling_itt`.  
+
+```{r recycling itt} 
+#itt = Yi(d(1))-Yi(d(0))/n
+recycling_itt <- (500/1500)-(600/3000)
+recycling_itt
+```
+
+2. What is the CACE? Do the work to compute it, and store it into the object `recycling_cace`.  
+
+```{r recycling cace} 
+# CACE = Yi(d(1))-Yi(d(0))/n compliers
+recycling_cace <- recycling_itt/(700/1500)
+recycling_cace
+```
+
+There appear to be some inconsistencies regarding how the undergraduates actually carried out the instructions they were given. 
+
+- One of the students, Mike, tells you that they actually lied about the the number of contacted treatment households and that the true number was 500. 
+- Another student, Andy, tells you that the true number was actually 600.
+
+3. What is the CACE if Mike is correct?
+
+```{r cace mike} 
+cace_mike <- recycling_itt/(500/1500)
+cace_mike
+```
+  
+4. What is the CACE if Andy is correct?
+
+```{r cace andy}
+cace_andy <- recycling_itt/(600/1500)
+cace_andy
+```
+
+For the rest of this question, suppose that **in fact** Mike was telling the truth.  
+  
+5. What was the impact of the undergraduates’s false reporting on our estimates of the treatment’s effectiveness?
+
+```{r}
+cace_dif <- cace_mike- recycling_cace
+cace_dif
+```
+
+
+>  The false reporting changed the estimate for effectiveness by `r cace_mike- recycling_cace`. This is a 11.4% change. Using the original CACE value you would underestimate the true CACE.
+  
+6. Does your answer change depending on whether you choose to focus on the ITT or the CACE?
+
+> Yes my answer would change. The ITT should actually stay the same since the denominator includes everyone regardless of whether they actually received the treatment or not. For this reason the **ITT would not change**. The CACE **would change** since it depends on how many people were actually treated or the compliance rate.
+
+
+
+
