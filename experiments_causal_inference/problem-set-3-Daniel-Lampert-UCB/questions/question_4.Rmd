@@ -1,0 +1,103 @@
+# 4. Now! Do it with data 
+Download the data set for the recycling study in the previous problem, obtained from the authors. We'll be focusing on the outcome variable Y="number of bins turned in per week" (avg_bins_treat).
+
+```{r}
+d <- foreign::read.dta("../data/karlan_data_subset_for_class.dta")
+d <- data.table(d)
+head(d)
+library(sandwich)
+library(lmtest)
+
+## Do some quick exploratory data analysis with this data. 
+## There are some values in this data that seem a bit strange. 
+
+## Determine what these are. 
+## Don't make an assessment about keeping, changing, or 
+## dropping just yet, but at any point that your analysis touches 
+## these variables, you'll have to determine what is appropriate 
+## given the analysis you are conducting. 
+```
+```{r}
+summary(d)
+```
+
+1. For simplicity, let's start by measuring the effect of providing a recycling bin, ignoring the SMS message treatment (and ignoring whether there was a sticker on the bin or not).  Run a regression of Y on only the bin treatment dummy, so you estimate a simple difference in means.  Provide a 95% confidence interval for the treatment effect, using **of course** robust standard errors (use these throughout). 
+
+```{r estimate basic model}
+d <- d[!is.na(street), ]
+mod_1 <- d[, lm(avg_bins_treat ~ bin)]
+summary(mod_1)
+#robust SE conf.int
+coefci(mod_1, level = 0.95, vcov. = vcovHC, 'bin')
+```
+> The results for bin are highly statistically significant with coefiecient 0.13332 (0.02023).
+
+2. Now add the pre-treatment value of Y as a covariate.  Provide a 95% confidence interval for the treatment effect.  Explain how and why this confidence interval differs from the previous one.
+
+```{r add pre-treatment values}
+mod_2 <- d[, lm(avg_bins_treat ~ bin + base_avg_bins_treat)]
+summary(mod_2)
+coefci(mod_2, level = 0.95, vcov. = vcovHC, 'bin')
+```
+> Adding the `base_avg_bins_treat` makes the confidence interval substantially more narrow. This occurs because `base_avg_bins_treat` explains a sizeable portion of the variance. Having a measurement for a past occurence `base_avg_bins_treat`, largely explains the future event. 
+
+3. Now add the street fixed effects.  (You'll need to use the R command factor().) Provide a 95% confidence interval for the treatment effect.  
+
+```{r add fixed effects}
+mod_3 <- d[, lm(avg_bins_treat ~ bin + base_avg_bins_treat + factor(street))]
+coeftest(mod_3, vcov = vcovHC(mod_3, type = "HC0"))[2, ]
+coefci(mod_3, level = 0.95, vcov. = vcovHC, "bin")
+
+```
+> The confidence intervals for the bin show that the effect of bin is in fact statitically significant since the confidence interval does not include 0. The coeficient is 0.1138868 (0.0165953) and the p-value is highly significant. 
+
+4. Recall that the authors described their experiment as "stratified at the street level," which is a synonym for blocking by street.  Does including these block fixed effects change the standard errors of the estimates *very much*? Conduct the appropriate test for the inclusion of these block fixed effects, and interpret them in the context of the other variables in the regression. 
+
+#do anova between the models
+```{r fixed effects model} 
+mod_4 <- d[, lm(avg_bins_treat ~ bin + base_avg_bins_treat + factor(street))]
+coeftest(mod_4, vcov = vcovHC(mod_4, type = "HC0"))[2, ] #coefficient and robust se for mod_4
+coefci(mod_4, level = 0.95, vcov. = vcovHC, "bin")
+```
+
+```{r test for fixed effects}
+test_fixed_effects <- anova(mod_4, mod_2, test = "F")
+test_fixed_effects
+```
+
+> No they have practically no impact on the standard error. My hypothesis is that since the variable `base_avg_bins_treat` is included, the street level variations explain **very little** variance. Howeover, the F test comparing the two models does show that model 4 explains a higher percentage of the variation as seen in the RSS and the significant p-value. 
+
+5. Perhaps having a cell phone helps explain the level of recycling behavior. Instead of "has cell phone," we find it easier to interpret the coefficient if we define the variable " no cell phone."  Give the R command to define this new variable, which equals one minus the "has cell phone" variable in the authors' data set.  Use "no cell phone" instead of "has cell phone" in subsequent regressions with this dataset.
+
+```{r feature engineering mid-analysis (dont do this IRL!)}
+d <- d[, no_cell := 1 - havecell]
+```
+
+6. Now add "no cell phone" as a covariate to the previous regression.  Provide a 95% confidence interval for the treatment effect.  Explain why this confidence interval does not differ much from the previous one.
+
+```{r add cell-phone variable}
+mod_5 <- d[, lm(avg_bins_treat ~ bin + base_avg_bins_treat + factor(street) + no_cell)] # add missing var
+coeftest(mod_5, vcov = vcovHC(mod_4, type = "HC0"))[2, ] #coefficient and robust se
+coef_5 <- coefci(mod_5, level = 0.95, vcov. = vcovHC, 'bin')
+coef_5
+```
+> The confidence interval is `coef_5`. The confidence interval does not change much because the `base_avg_bins_treat` variable explains much of the current performance based on the past performance. This variable explains a great deal of the variance. Adding the `nocell` variable fails to narrow the CI much since `base_avg_bins_treat` already explains much of the variance. This can also be seen in the fact that the standard error remains very close to the previous one. 
+
+7. Now let's add in the SMS treatment.  Re-run the previous regression with "any SMS" included.  You should get the same results as in Table 4A.  Provide a 95% confidence interval for the treatment effect of the recycling bin.  Explain why this confidence interval does not differ much from the previous one.
+
+```{r add sms treatment}
+mod_6 <- d[, lm(avg_bins_treat ~ bin + base_avg_bins_treat + factor(street)+no_cell + sms)]
+#summary(mod_6)
+coeftest(mod_6, vcov = vcovHC(mod_6, type = "HC0"))[2, ] #coefficient and robust se
+coefci(mod_6, level = 0.95, vcov. = vcovHC, 'bin')
+```
+> Like the previous question the inclussion of sms makes very little difference since the other variables already explain most of the variance. 
+
+8. Now reproduce the results of column 2 in Table 4B, estimating separate treatment effects for the two types of SMS treatments and the two types of recycling-bin treatments.  Provide a 95% confidence interval for the effect of the unadorned recycling bin.  Explain how your answer differs from that in part (g), and explain why you think it differs.
+
+```{r full model}
+mod_7 <-  d[, lm(avg_bins_treat ~ bin_s + bin_g + sms_p+ sms_g + no_cell + base_avg_bins_treat)]
+coeftest(mod_7, vcov = vcovHC(mod_7, type = "HC0")) #coefficient and robust se
+coefci(mod_7, level = 0.95, vcov. = vcovHC, 'bin_g')
+```
+> This model includes more specific covariates than in part g. Now this regression includes a covariate for bin with sticker and without. This slightly shifted the estimate for bins. I think the results from this regression differ since the effect of bin and sms are broken into two sub-categories so inheritantly their impact is different. 

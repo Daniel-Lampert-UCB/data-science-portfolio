@@ -1,0 +1,28 @@
+# 3. Multifactor Experiments 
+
+Staying with the same experiment, now think about multifactor experiments. 
+
+1. What is the full experimental design for this experiment?  Tell us the dimensions, such as 2x2x3.  (Hint: the full results appear in Panel 4B.)
+
+> The dimensions are 3 *3. There are 3 treatment groups and within the groups there are no SMS messages, personal SMS message, and generic SMS message. 
+
+
+2. In the results of Table 4B, describe the baseline category. That is, in English, how would you describe the attributes of the group of people for whom all dummy variables are equal to zero?
+
+> This would describe people who do not have a cell phone, who did not receive a bin, nor an SMS message
+
+3. In column (1) of Table 4B, interpret the magnitude of the coefficient on "bin without sticker."  What does it mean?
+
+> Bin without sticker signifies a recycling bin that does not have a sticker. The coefficient for bin without sticker signifies that having a bin without a sticker (a dummy variable) leads to an increase of 0.035 visits where a bag of recyclables are turned in. In contrast, not having a bin without a sticker leads to a 0% change in turning in a recyclable bag. 
+
+4. In column (1) of Table 4B, which seems to have a stronger treatment effect, the recycling bin with message sticker, or the recycling bin without sticker?  How large is the magnitude of the estimated difference?
+
+> The recycling bin with a sticker seems to have a somewhat stronger effect. The coefficient for the recycling bin with a sticker is 0.055 with a standard error of 0.015 and the coefficient for a recycling bin without a sticker is 0.035 with a standard error of 0.015. 
+
+5. Is this difference you just described statistically significant?  Explain which piece of information in the table allows you to answer this question.
+
+> No it is not. They included an F test p-value for the difference of the coefficients. 
+
+6. Notice that Table 4C is described as results from "fully saturated" models.  What does this mean?  Looking at the list of variables in the table, explain in what sense the model is "saturated."
+
+> A fully saturated model is a model that has as many parameters as data points. This can be seen in the number of paremeters the model has. In this case, the model contains a dummy variable (or indicator variable) for every combination of variables.

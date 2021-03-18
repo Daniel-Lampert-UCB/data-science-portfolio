@@ -1,0 +1,53 @@
+# 2. Peruvian Recycling 
+
+Look at [this article](./readings/recycling_peru.pdf) about encouraging recycling in Peru.  The paper contains two experiments, a "participation study" and a "participation intensity study."  In this problem, we will focus on the latter study, whose results are contained in Table 4 in this problem.  You will need to read the relevant section of the paper (starting on page 20 of the manuscript) in order to understand the experimental design and variables.  (*Note that "indicator variable" is a synonym for "dummy variable," in case you haven't seen this language before.*)
+
+1. In Column 3 of Table 4A, what is the estimated ATE of providing a recycling bin on the average weight of recyclables turned in per household per week, during the six-week treatment period?  Provide a 95% confidence interval.
+
+> The point estimate for the ATE of providing a recycling bin is 0.187. The 95% confidence is calculated in the chunk below. The range is from 0.12428 ~ 0.24972 which is significant since zero is not contained.
+
+```{r}
+coeficient = 0.187
+se = 0.032
+lower_bound = coeficient - 1.96 * se
+upper_bound = coeficient + 1.96 * se
+paste(lower_bound, "~", upper_bound)
+```
+
+
+2. In Column 3 of Table 4A, what is the estimated ATE of sending a text message reminder on the average weight of recyclables turned in per household per week?  Provide a 95% confidence interval.
+
+> The estimated ATE of sending a text message reminder is 20.024 with a standard error of 0.039. The 95% confidence is calculated in the chunk below (-0.10044 ~ 0.05244).
+
+```{r}
+coef_2 = -0.024
+se_2 = 0.039
+lower_bound = coef_2 - 1.96*se_2
+upper_bound = coef_2 + 1.96 *se_2
+paste(lower_bound, "~", upper_bound)
+```
+
+
+3. Which outcome measures in Table 4A show statistically significant effects (at the 5% level) of providing a recycling bin?
+
+> Four outcome variables show statistically significant effects at the 5% level. The outcome variables are percentage of visits turned in bag, avg. number of bins turned in per week, average weight of recyclables turned in per week, and average market value of recyclables turned in per week.
+
+
+4. Which outcome measures in Table 4A show statistically significant effects (at the 5% level) of sending text messages?
+> None of the outcome measures in Table 4A show statistically significant effects at the 0.05 level from sending text messages. 
+
+5. Suppose that, during the two weeks before treatment, household A turns in 2kg per week more recyclables than household B does, and suppose that both households are otherwise identical (including being in the same treatment group).  From the model, how much more recycling do we predict household A to have than household B, per week, during the six weeks of treatment?   Provide only a point estimate, as the confidence interval would be a bit complicated.  This question is designed to test your understanding of slope coefficients in regression.
+
+> Holding all else constant we espect household A to turn in 2.244kg more of recycling than household B. I calculated this by multiplying the slope coefficient for Avg. weight (in kg) of recyclables turned in per week, 0.187*2kg *6 weeks which gave a total of 2.244kg. I multiplied by 6 since the study duration is six weeks. 
+
+6. Suppose that the variable "percentage of visits turned in bag, baseline" had been left out of the regression reported in Column 1.  What would you expect to happen to the results on providing a recycling bin?  Would you expect an increase or decrease in the estimated ATE?  Would you expect an increase or decrease in the standard error?  Explain our reasoning.
+
+> I would espect an increase in the average treatment effect. I believe removing this variable would make it look like providing a recycling bin has a larger effect than it actually does. I would also espect the standard error to increase. 
+
+7. In column 1 of Table 4A, would you say the variable "has cell phone" is a bad control?  Explain your reasoning.
+
+> I do no think so. I do not believe has cell phone is correlated with both the treatment and the outcome variable. For this reason, I do not think it's a bad control. However, the necessity to include this variable is largely an issue with the study design since one of the treatments cannot be applied to some people in the treatment group. 
+
+8. If we were to remove the "has cell phone" variable from the regression, what would you expect to happen to the coefficient on "Any SMS message"?  Would it go up or down? Explain your reasoning.
+
+> I think it would likely increase to some extent since it would take some variance from the has cell phone variable. This would occur since the information contained in the has cell phone variable would likely get picked up in the sms variable.
