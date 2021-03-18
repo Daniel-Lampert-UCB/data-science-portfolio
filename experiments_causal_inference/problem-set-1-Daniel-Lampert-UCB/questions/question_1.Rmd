@@ -1,0 +1,17 @@
+# Potential Outcomes Notation 
+
+1. Explain the notation $Y_i(1)$.
+
+$Y_i(1)$ is the potential treated outcome for an event or individual, i. Since it is a potential treated outcome, this notation does not neccessarily imply that they actually received treatment. It could be completely hypothetical.
+
+2. Explain the notation $Y_1(1)$.
+
+$Y_1(1)$ is the potential treated outcome notation for individual or event 1. Like question 1, this notation does not neccessarily imply that the individual 1 received treatment in real life.
+
+3. Explain the notation $E[Y_i(1)|d_i=0]$.
+
+This denotes the espected potential treated outcome among the group that DID not receive treatment. In other words, it is the average outcome for the group that did not receive treatment IF they received treatment. Clearly, we never actually get to see this because it is purely hypothetical.
+
+4. Explain the difference between the notation $E[Y_i(1)]$ and $E[Y_i(1)|d_i=1]$
+
+$E[Y_i(1)$ denotes the expected treated outcome. This encompasses people/events who are and are not actually in the treated group. The second expression, $E[Y_i(1)|d_i =1]$ specifically denotes the expected treated outcome in the group that DOES receive treatment. With the guarantess of random assignment, both of these expressions are equal to each other.

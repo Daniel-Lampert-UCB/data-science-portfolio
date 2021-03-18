@@ -1,0 +1,15 @@
+# Randomization and Experiments 
+
+1. Assume that researcher takes a random sample of elementary school children and compare the grades of those who were previously enrolled in an early childhood education program with the grades of those who were not enrolled in such a program. Is this an experiment, an observational study, or something in between? Explain!
+
+This is an observational study because the treatment (early chidhood education) is not assigned to the students. They simply looked at two groups, one who received early education and the other that did not. 
+
+2. Assume that the researcher works together with an organization that provides early childhood education and offer free programs to certain children. However, which children that received this offer was not randomly selected by the researcher but rather chosen by the local government. (Assume that the government did not use random assignment but instead gives the offer to students who are deemed to need it the most) The research follows up a couple of years later by comparing the elementary school grades of students offered free early childhood education to those who were not. Is this an experiment, an observational study, or something in between? Explain! 
+
+I would say this is something in between an observational study and an experimental study. The treatment, early childhood education, is assigned but it is not assigned randomly. This means that some of the benefits seen in a truly randomized experiment will not be available in this study. In other words, the researchers would not be able to compare apples to apples since early childhood education was assigned based on financial need. Almost certainly this would introduce confounding variables into the study.
+
+3. Does your answer to part (2) change if we instead assume that the government assigned students to treatment and control by "coin toss" for each student? Why or why not?  
+
+Yes completely. This makes the experiment a true randomized experiment. This would mean that on average the treatment and control group would not differ in substantial ways. This would give us all the positive guarantees of a true randomized experiment. 
+
+

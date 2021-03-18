@@ -1,0 +1,15 @@
+# Moral Panic 
+
+Suppose that a researcher finds that high school students who listen to death metal music at least once per week are more likely to perform badly on standardized test. :metal: As a consequence, the researcher writes an opinion piece in which she recommends parents to keep their kids away from "dangerous, satanic music". 
+
+- Let the potential outcomes to control, $Y_i(0)$, be each student's test score when listening to death metal at least one time per week. 
+- Let $Y_i(1)$ be the test score when listening to death metal less than one time per week. 
+
+1. Explain the statement $E[Y_i(0)|D_i=0] = E[Y_i(0)|D_i=1]$ in words. First, state the rote english language translation -- i.e. "The expected value of ..." -- but then, second, tell us the *meaning* of this statement. 
+
+The English translation would be the expected untreated potential outcome (test scores) in individuals who actually listened to death metal music is equal to the expected untreated potential outcome in individuals who did not listen to death metal music, had they listened to death metal music. In other words, students who do not receive the treatment, not listening to death metal, have the same expected untreated potential outcome $Y_i(0)$ that the treatment group, $D_i = 1$ would have if they were untreated. This underlies one of the main guarantees of random assignment, that treatment and control groups have the same expected potential outcome. 
+
+
+2. Do you expect that this circumstance actually matches with the meaning that you've just written down? Why or why not? 
+
+No I do not. The above statement is a guarantee with true random assignment. The circumstances that the teacher put forth are not at all random. It is very likely that individuals who choose to listen to death metal music vary in substantial ways from individuals who do not since assignment was not random. Therefore, I do not think the average test scores would be the same between the groups and therefore the inequality would not hold.

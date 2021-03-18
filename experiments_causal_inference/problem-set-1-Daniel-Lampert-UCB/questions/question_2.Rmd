@@ -1,0 +1,25 @@
+# Potential Outcomes and Treatment Effects 
+
+```{r, include = FALSE}
+table <- data.table(
+  subject = 1:7, 
+  y_0 = c(10, 12, 15, 11, 10, 17, 16), 
+  y_1 = c(12, 12, 18, 14, 15, 18, 16),
+  tau = c(2, 0, 3, 3, 5, 1, 0)
+)
+```
+
+1. Use the values in the table below to illustrate that $E[Y_i(1)]-E[Y_i(0)] = E[Y_i(1)- [Y_i(0)]$.
+
+This expression, $E[Y_i(1)]-E[Y_i(0)]$ is simply the average of $Y_1$ - the average of $Y_0$ which is equivalent to taking the average of both groups subtracted from each other. I will show this in code here. 
+
+```{r}
+#Left hand side
+table[ , .(mean(y_1))] - table[ , .(mean(y_0))]
+table[, .(mean(y_1-y_0))]
+```
+**2 = 2**
+
+2. Is it possible to collect all necessary values and construct a table like the one below in real life? Explain why or why not. 
+
+**No it is not**. It is not possible to have two events occur in the same individual at the same time. For this data to occur in real life, two treatment events for the same individual would have to occur at exactly the same time. Clearly, this cannot happen. 
