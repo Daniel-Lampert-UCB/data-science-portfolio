@@ -2,6 +2,8 @@
 Repository containing data science projects I have completed for academic, self learning, and public health projects. The contents inlucde Jupyter Notebooks and R markdown files.
 ## Contentents
 ### Machine Learning
+1. Detection of Twitter bots using tweets with BERT and DistilBERT. 
+### Machine Learning
 1. Multi-Class identification of mechanisms of action for medical compounds
 2. Daniel_Lampert_p3.ipynb - Text class identification using a variety of algorithms.
 3. Topic Classification using logistic regression, K-Nearest Neighbors, and Naive Bayes.
